@@ -1,0 +1,35 @@
+#canvas {
+  border: 1px solid black;
+  cursor: crosshair;
+}
+
+#pencil-btn {
+  outline: none;
+  background-color: "white";
+}
+
+.canvas-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar, .canvas {
+  margin: 15px;
+}
+
+.user-status-panel {
+  border: 1px solid black;
+  margin: 15px;
+  width: 300px;
+}
+
+.connected {
+  color: blue;
+  text-align: center;
+}
+
+.disconnected {
+  color: red;
+  text-align: center; 
+}
