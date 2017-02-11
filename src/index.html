@@ -9,9 +9,11 @@
   <body>
     <div class="canvas-container">
       <div class="toolbar">
-        <button id="pencil-btn" class="btn btn-default" onclick={"pencilToggle();"}>
-          <img src="images/pencil.png" width="20" />
-        </button>
+        <button id="pencil-btn" class="btn btn-default toolbar-btn" value="pencil" onclick={"toolToggle(event);"}></button>
+        <button id="line-btn" class="btn btn-default toolbar-btn" value="line" onClick={"toolToggle(event)"}></button>
+        <button id="square-btn" class="btn btn-default toolbar-btn" value="square" onClick={"toolToggle(event)"}></button>
+        <button id="circle-btn" class="btn btn-default toolbar-btn" value="circle" onClick={"toolToggle(event)"}></button>
+        <button id="triangle-btn" class="btn btn-default toolbar-btn" value="triangle" onClick={"toolToggle(event)"}></button>
       </div>
       <canvas id="canvas" width="500" height="500"></canvas>
       <div class="user-status-panel">
