@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function(){
   let toolSelected = false;
   let canvasOffset = $('#canvas').offset(); //get the offset of the canvas
   let socket = io.connect("http://localhost:3000");  //get the socket
-  // let mouseDown, mouseMove = false;
 
   //various tools
   let pencilTool = new pencil();
@@ -96,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function(){
     this.started = false;
 
     this.mousedown = function(event){
-      // mouseDown = true;
       socket.emit('draw-new', {line: [event.x, event.y]});
       tool.started = true;
       ctx.mouseWidth = 12;
@@ -107,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     this.mousemove = function(event){
       if(tool.started){
-        // mouseMove = true;
         socket.emit('draw-new', {line: [event.x, event.y]});
         ctx.lineTo(event.x, event.y);
         ctx.stroke();
@@ -116,8 +113,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     this.mouseup = function(event){
       if(tool.started){
-        //mouseDown = false;
-        //tool.mousemove(event);
         tool.started = false;
       }
     }
@@ -163,23 +158,27 @@ document.addEventListener("DOMContentLoaded", function(){
     p.appendChild(userStatus);
     userPanel.appendChild(p);
   });
-  //user has drawn something
+  //client has drawn something
   socket.on('draw-new', function(data){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "red";
     ctx.lineTo(data.line[0], data.line[1]);
     ctx.stroke();
-    //mouseMove = false;
   });
-
+  //new client has join a session, update them with current state of canvas
   socket.on('draw-current', function(data){
-    console.log(data);
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "red";
+    //loop through array and drawn what has been drawn so far
+    for(coord in data) {
+      for(let i = 0; i < data[coord].length; i++){
+        ctx.lineTo(data[coord][i][0], data[coord][i][1]);
+        ctx.stroke();
+      }
+
+    }
 
   });
-
-
-
-
 
 
 });
