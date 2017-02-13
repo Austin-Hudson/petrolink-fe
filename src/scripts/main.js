@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.strokeStyle = "orange";
       ctx.beginPath();
       ctx.moveTo(event.x, event.y);
+      socket.emit("draw-new-line", {line: "START"});
       socket.emit("draw-new-line", {line:[event.x, event.y]});
     }
 
@@ -248,20 +249,6 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.closePath();
   });
 
-  socket.on('draw-new-line', function(data){
-    ctx.mouseWidth = 12;
-    ctx.strokeStyle = "orange";
-
-    if(data.line === "END"){
-      ctx.beginPath();
-    }
-    else {
-      ctx.lineTo(data.line[0], data.line[1]);
-      ctx.stroke();
-    }
-
-  });
-
   socket.on('draw-current-line', function(data){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "orange";
@@ -270,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function(){
     for(coord in data) {
       for(let i = 0; i < data[coord].length; i++){
 
-        if(data[coord][i] === "END"){
+        if(data[coord][i] === "END" || data[coord][i] === "START"){
           ctx.beginPath();
         }
         else {
@@ -281,6 +268,22 @@ document.addEventListener("DOMContentLoaded", function(){
     }
     ctx.closePath();
   });
+
+  socket.on('draw-new-line', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "orange";
+
+    if(data.line === "END" || data.line === "START"){
+      ctx.beginPath();
+    }
+    else {
+      ctx.lineTo(data.line[0], data.line[1]);
+      ctx.stroke();
+    }
+
+    ctx.closePath();
+  });
+
 
   socket.on('draw-current-square', function(data){
     ctx.mouseWidth = 12;
@@ -311,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.beginPath();
     ctx.arc(data.circle[0], data.circle[1],circleRadius, 0, 2*Math.PI);
     ctx.stroke();
-    // ctx.closePath();
+    ctx.closePath();
   });
 
   socket.on('draw-current-circle', function(data){
