@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
   }
 
+  //objects - tools
   function line() {
     let tool = this;
     this.started = false;
@@ -177,8 +178,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let ev = {};
     if(navigator.userAgent.indexOf('Chrome')){
-      ev.x = event.clientX - canvasOffset.left;
-      ev.y = event.clientY - canvasOffset.top;
+      // ev.x = event.clientX - canvasOffset.left;
+      // ev.y = event.clientY - canvasOffset.top;
+      ev.x = event.offsetX;
+      ev.y = event.offsetY;
     }
     else {
       ev.x = event.layerX;
@@ -255,6 +258,21 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.closePath();
   });
 
+  socket.on('draw-new-line', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "orange";
+
+    if(data.line === "END" || data.line === "START"){
+      ctx.beginPath();
+    }
+    else {
+      ctx.lineTo(data.line[0], data.line[1]);
+      ctx.stroke();
+    }
+
+    ctx.closePath();
+  });
+
   socket.on('draw-current-line', function(data){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "orange";
@@ -275,21 +293,13 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.closePath();
   });
 
-  socket.on('draw-new-line', function(data){
+  socket.on('draw-new-square', function(data){
     ctx.mouseWidth = 12;
-    ctx.strokeStyle = "orange";
-
-    if(data.line === "END" || data.line === "START"){
-      ctx.beginPath();
-    }
-    else {
-      ctx.lineTo(data.line[0], data.line[1]);
-      ctx.stroke();
-    }
-
+    ctx.strokeStyle = "green";
+    ctx.strokeRect(data.square[0], data.square[1], squareWidth, squareHeight);
+    ctx.stroke();
     ctx.closePath();
   });
-
 
   socket.on('draw-current-square', function(data){
     ctx.mouseWidth = 12;
@@ -303,14 +313,6 @@ document.addEventListener("DOMContentLoaded", function(){
         ctx.stroke();
       }
     // }
-    ctx.closePath();
-  });
-
-  socket.on('draw-new-square', function(data){
-    ctx.mouseWidth = 12;
-    ctx.strokeStyle = "green";
-    ctx.strokeRect(data.square[0], data.square[1], squareWidth, squareHeight);
-    ctx.stroke();
     ctx.closePath();
   });
 
@@ -362,6 +364,5 @@ document.addEventListener("DOMContentLoaded", function(){
         ctx.stroke();
       }
   });
-
 
 });

@@ -46,12 +46,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-self: center;
 }
 
 .user-status-panel {
-  border: 1px solid black;
   margin: 15px;
-  width: 300px;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column; 
+  border: 1px solid black;
+}
+
+.user-status-panel p{
+  margin: 5px;
 }
 
 .connected {
