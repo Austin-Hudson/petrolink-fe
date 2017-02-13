@@ -176,8 +176,14 @@ document.addEventListener("DOMContentLoaded", function(){
   function canvasEvent(event){
 
     let ev = {};
-    ev.x = event.clientX - canvasOffset.left;
-    ev.y = event.clientY - canvasOffset.top;
+    if(navigator.userAgent.indexOf('Chrome')){
+      ev.x = event.clientX - canvasOffset.left;
+      ev.y = event.clientY - canvasOffset.top;
+    }
+    else {
+      ev.x = event.layerX;
+      ev.y = event.layerY;
+    }
 
     if(toolClicked !== "none"){
 
