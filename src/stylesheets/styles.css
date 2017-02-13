@@ -1,5 +1,6 @@
 #canvas {
   border: 1px solid black;
+  margin: 15px; 
   cursor: crosshair;
 }
 
@@ -38,22 +39,20 @@
   justify-content: center;
 }
 
-.toolbar, .canvas {
+.toolbar{
   margin: 15px;
 }
 
 .toolbar {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  align-self: center;
 }
 
 .user-status-panel {
   margin: 15px;
   display: flex;
   justify-content: flex-start;
-  flex-direction: column; 
+  flex-direction: column;
   border: 1px solid black;
 }
 
