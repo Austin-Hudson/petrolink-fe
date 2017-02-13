@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function(){
   let toolSelected = false;
   let canvasOffset = $('#canvas').offset(); //get the offset of the canvas
   let socket = io.connect("http://localhost:3000");  //get the socket
+  let squareWidth = squareHeight = 75;
+  let circleRadius = 30;
+  let triangleSide = 50;
 
   //various tools
   let pencilTool = new pencil();
@@ -80,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.strokeStyle = "orange";
       ctx.beginPath();
       ctx.moveTo(event.x, event.y);
+      socket.emit("draw-new-line", {line:[event.x, event.y]});
     }
 
     this.mouseup = function(event){
@@ -87,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function(){
         ctx.lineTo(event.x, event.y);
         ctx.stroke();
         tool.started = false;
+        socket.emit("draw-new-line", {line:[event.x, event.y]});
       }
     }
   }
@@ -104,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.lineTo(event.x + 50, event.y + 50);
       ctx.closePath();
       ctx.stroke();
+      socket.emit("draw-new-triangle", {triangle: [event.x, event.y]});
     }
   }
 
@@ -117,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.beginPath();
       ctx.arc(event.x, event.y, 30, 0, 2*Math.PI);
       ctx.stroke();
+      socket.emit("draw-new-circle", {circle: [event.x, event.y]});
     }
   }
 
@@ -128,7 +135,8 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.mouseWidth = 12;
       ctx.strokeStyle = "green";
       ctx.beginPath();
-      ctx.strokeRect(event.x, event.y, 75, 75);
+      ctx.strokeRect(event.x, event.y, squareWidth, squareHeight);
+      socket.emit('draw-new-square', {square: [event.x, event.y]});
     }
   }
 
@@ -209,12 +217,14 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.strokeStyle = "red";
     ctx.lineTo(data.line[0], data.line[1]);
     ctx.stroke();
+    ctx.closePath();
   });
 
   //new client has join a session, update them with current state of canvas
-  socket.on('draw-current', function(data){
+  socket.on('draw-current-drawing', function(data){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "red";
+    ctx.beginPath();
     //loop through array and drawn what has been drawn so far
     for(coord in data) {
       for(let i = 0; i < data[coord].length; i++){
@@ -222,7 +232,101 @@ document.addEventListener("DOMContentLoaded", function(){
         ctx.stroke();
       }
     }
+    ctx.closePath();
+  });
 
+  socket.on('draw-new-line', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "orange";
+    ctx.lineTo(data.line[0], data.line[1]);
+    ctx.stroke();
+    ctx.closePath();
+  });
+
+  socket.on('draw-current-line', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "orange";
+    ctx.beginPath();
+    //loop through array and drawn what has been drawn so far
+    for(coord in data) {
+      for(let i = 0; i < data[coord].length; i++){
+        ctx.lineTo(data[coord][i][0], data[coord][i][1]);
+        ctx.stroke();
+      }
+    }
+    ctx.closePath();
+  });
+
+  socket.on('draw-current-square', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "green";
+    ctx.beginPath();
+
+    //loop through array and drawn what has been drawn so far
+    // for(coord in data) {
+      for(let i = 0; i < data.square.length; i++){
+        ctx.strokeRect(data.square[i][0], data.square[i][1], squareWidth, squareHeight);
+        ctx.stroke();
+      }
+    // }
+    ctx.closePath();
+  });
+
+  socket.on('draw-new-square', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "green";
+    ctx.strokeRect(data.square[0], data.square[1], squareWidth, squareHeight);
+    ctx.stroke();
+    ctx.closePath();
+  });
+
+  socket.on('draw-new-circle', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(data.circle[0], data.circle[1],circleRadius, 0, 2*Math.PI);
+    ctx.stroke();
+    // ctx.closePath();
+  });
+
+  socket.on('draw-current-circle', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "blue";
+
+    //loop through array and drawn what has been drawn so far
+      for(let i = 0; i < data.circle.length; i++){
+        ctx.beginPath();
+        ctx.arc(data.circle[i][0], data.circle[i][1],circleRadius, 0, 2*Math.PI);
+        ctx.stroke();
+        ctx.closePath();
+      }
+
+  });
+
+  socket.on('draw-new-triangle', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "purple";
+    ctx.beginPath();
+    ctx.moveTo(data.triangle[0], data.triangle[1]);
+    ctx.lineTo(data.triangle[0] - triangleSide, data.triangle[1] + triangleSide);
+    ctx.lineTo(data.triangle[0] + triangleSide, data.triangle[1] + triangleSide);
+    ctx.closePath();
+    ctx.stroke();
+  });
+
+  socket.on('draw-current-triangle', function(data){
+    ctx.mouseWidth = 12;
+    ctx.strokeStyle = "purple";
+
+    //loop through array and drawn what has been drawn so far
+      for(let i = 0; i < data.triangle.length; i++){
+        ctx.beginPath();
+        ctx.moveTo(data.triangle[i][0], data.triangle[i][1]);
+        ctx.lineTo(data.triangle[i][0] - triangleSide, data.triangle[i][1] + triangleSide);
+        ctx.lineTo(data.triangle[i][0] + triangleSide, data.triangle[i][1] + triangleSide);
+        ctx.closePath();
+        ctx.stroke();
+      }
   });
 
 
