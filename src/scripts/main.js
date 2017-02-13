@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function(){
         ctx.stroke();
         tool.started = false;
         socket.emit("draw-new-line", {line:[event.x, event.y]});
+        socket.emit("draw-new-line", {line: "END"});
       }
     }
   }
@@ -250,9 +251,15 @@ document.addEventListener("DOMContentLoaded", function(){
   socket.on('draw-new-line', function(data){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "orange";
-    ctx.lineTo(data.line[0], data.line[1]);
-    ctx.stroke();
-    ctx.closePath();
+
+    if(data.line === "END"){
+      ctx.beginPath();
+    }
+    else {
+      ctx.lineTo(data.line[0], data.line[1]);
+      ctx.stroke();
+    }
+
   });
 
   socket.on('draw-current-line', function(data){
@@ -262,8 +269,14 @@ document.addEventListener("DOMContentLoaded", function(){
     //loop through array and drawn what has been drawn so far
     for(coord in data) {
       for(let i = 0; i < data[coord].length; i++){
-        ctx.lineTo(data[coord][i][0], data[coord][i][1]);
-        ctx.stroke();
+
+        if(data[coord][i] === "END"){
+          ctx.beginPath();
+        }
+        else {
+          ctx.lineTo(data[coord][i][0], data[coord][i][1]);
+          ctx.stroke();
+        }
       }
     }
     ctx.closePath();
