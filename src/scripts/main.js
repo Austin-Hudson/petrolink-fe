@@ -164,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     this.mouseup = function(event){
       if(tool.started){
+        socket.emit('draw-new', {line: "END"});
         tool.started = false;
       }
     }
@@ -215,9 +216,15 @@ document.addEventListener("DOMContentLoaded", function(){
   socket.on('draw-new', function(data){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "red";
-    ctx.lineTo(data.line[0], data.line[1]);
-    ctx.stroke();
-    ctx.closePath();
+
+    if(data.line === "END"){
+      ctx.beginPath();
+    }
+    else {
+      ctx.lineTo(data.line[0], data.line[1]);
+      ctx.stroke();
+    }
+
   });
 
   //new client has join a session, update them with current state of canvas
@@ -228,8 +235,13 @@ document.addEventListener("DOMContentLoaded", function(){
     //loop through array and drawn what has been drawn so far
     for(coord in data) {
       for(let i = 0; i < data[coord].length; i++){
-        ctx.lineTo(data[coord][i][0], data[coord][i][1]);
-        ctx.stroke();
+        if(data[coord][i] === "END"){
+          ctx.beginPath();
+        }
+        else {
+          ctx.lineTo(data[coord][i][0], data[coord][i][1]);
+          ctx.stroke();
+        }
       }
     }
     ctx.closePath();
