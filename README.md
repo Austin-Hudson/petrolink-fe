@@ -9,4 +9,4 @@
 ### What the user can do
 The user can free draw, draw lines, squares, circles and triangles.
 
-![Canvas Drawing](/images/screenshot-1.png)
+![Canvas Drawing](src/images/screenshot-1.png)
