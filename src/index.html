@@ -9,7 +9,8 @@
   <body>
     <div class="canvas-container">
       <div class="toolbar">
-        <button id="pencil-btn" class="btn btn-default toolbar-btn" value="pencil" onclick={"toolToggle(event);"}></button>
+        <h4>Tools</h4>
+        <button id="pencil-btn" class="btn toolbar-btn" value="pencil" onclick={"toolToggle(event);"}></button>
         <button id="line-btn" class="btn btn-default toolbar-btn" value="line" onClick={"toolToggle(event);"}></button>
         <button id="square-btn" class="btn btn-default toolbar-btn" value="square" onClick={"toolToggle(event);"}></button>
         <button id="circle-btn" class="btn btn-default toolbar-btn" value="circle" onClick={"toolToggle(event);"}></button>
@@ -18,6 +19,7 @@
       </div>
       <canvas id="canvas" width="500" height="500"></canvas>
       <div class="user-status-panel pre-scrollable">
+
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
