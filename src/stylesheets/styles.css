@@ -1,6 +1,6 @@
 #canvas {
   border: 1px solid black;
-  margin: 15px; 
+  margin: 15px;
   cursor: crosshair;
 }
 
@@ -41,6 +41,13 @@
 
 .toolbar{
   margin: 15px;
+  border: 1px solid black;
+  display: flex;
+  align-self:center;
+  -moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+  padding: 5px; 
 }
 
 .toolbar {
