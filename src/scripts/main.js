@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.mouseWidth = 12;
       ctx.strokeStyle = "blue";
       ctx.beginPath();
-      ctx.arc(event.x, event.y, 30, 0, 2*Math.PI);
+      ctx.arc(event.x, event.y, circleRadius, 0, 2*Math.PI);
       ctx.stroke();
       socket.emit("draw-new-circle", {circle: [event.x, event.y]});
     }
