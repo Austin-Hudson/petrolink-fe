@@ -135,8 +135,8 @@ document.addEventListener("DOMContentLoaded", function(){
       ctx.strokeStyle = "purple";
       ctx.beginPath();
       ctx.moveTo(event.x, event.y);
-      ctx.lineTo(event.x - 50, event.y + 50);
-      ctx.lineTo(event.x + 50, event.y + 50);
+      ctx.lineTo(event.x - triangleSide, event.y + triangleSide);
+      ctx.lineTo(event.x + triangleSide, event.y + triangleSide);
       ctx.closePath();
       ctx.stroke();
       socket.emit("draw-new-triangle", {triangle: [event.x, event.y]});
