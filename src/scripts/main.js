@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function(){
   let circleBtn = document.querySelector("#circle-btn");
   let triangleBtn = document.querySelector("#triangle-btn");
   let lineBtn = document.querySelector("#line-btn");
+  // let eraseBtn = document.querySelector("#eraser-btn");
 
   //globals
   let ctx = canvas.getContext("2d"); //context to be able to do 2d drawing
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function(){
   let circleTool = new circle();
   let triangleTool = new triangle();
   let lineTool = new line();
+  // let eraserTool = new eraser();
 
   //add various tools to tool object
   let tools = {};
@@ -33,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function(){
   tools.circle = circleTool;
   tools.triangle = triangleTool;
   tools.line = lineTool;
+  // tools.eraser = eraserTool;
 
   //listeners
   canvas.addEventListener("mousedown", canvasEvent, false);
@@ -60,6 +63,10 @@ document.addEventListener("DOMContentLoaded", function(){
     toolToggle(event);
   });
 
+  // eraseBtn.addEventListener("click", function(event){
+  //   toolToggle(event);
+  // })
+
   function toolToggle(event){
     if(toolClicked !== event.target.value && !toolSelected){
       toolClicked = event.target.value
@@ -74,6 +81,26 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
   //objects - tools
+
+  // function eraser(){
+  //   let tool = this;
+  //   this.started = false;
+  //
+  //   this.mousedown = function(event){
+  //     tool.started = true;
+  //   }
+  //
+  //   this.mousemove = function(event){
+  //     if(tool.started){
+  //
+  //     }
+  //   }
+  //
+  //   this.mouseup = function(event){
+  //     tool.started = false;
+  //   }
+  // }
+
   function line() {
     let tool = this;
     this.started = false;
@@ -149,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function(){
     this.started = false;
 
     this.mousedown = function(event){
+      socket.emit('draw-new', {line: "START"});
       socket.emit('draw-new', {line: [event.x, event.y]});
       tool.started = true;
       ctx.mouseWidth = 12;
@@ -206,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function(){
     // Edit the DOM
     let userPanel = document.querySelector(".user-status-panel");
     let p = document.createElement("p");
-    let userStatus = document.createTextNode(data.message);
+    let userStatus = document.createTextNode(data.loginMessage);
     p.classList.add("connected");
     p.appendChild(userStatus);
     userPanel.appendChild(p);
@@ -217,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function(){
     //Edit the DOM
     let userPanel = document.querySelector(".user-status-panel");
     let p = document.createElement("p");
-    let userStatus = document.createTextNode(data.message);
+    let userStatus = document.createTextNode(data.disconnectMessage);
     p.classList.add("disconnected");
     p.appendChild(userStatus);
     userPanel.appendChild(p);
@@ -228,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function(){
     ctx.mouseWidth = 12;
     ctx.strokeStyle = "red";
 
-    if(data.line === "END"){
+    if(data.line === "END" || data.line === "START"){
       ctx.beginPath();
     }
     else {
@@ -246,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function(){
     //loop through array and drawn what has been drawn so far
     for(coord in data) {
       for(let i = 0; i < data[coord].length; i++){
-        if(data[coord][i] === "END"){
+        if(data[coord][i] === "END" || data[coord][i] === "START"){
           ctx.beginPath();
         }
         else {
